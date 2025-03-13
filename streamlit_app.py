@@ -296,7 +296,7 @@ def get_chuj_stats():
         SELECT player, COUNT(*) as chuj_count FROM (SELECT game_id, player, SUM(score) as total_score
                                         FROM games_history
                                         GROUP BY game_id, player
-                                        HAVING SUM(score) > 100);
+                                        HAVING SUM(score) > 100) a GROUP BY player;
     ''', ttl=0)
     
     if chuj_data.empty:
@@ -317,7 +317,7 @@ def display_game_history():
             x='player', 
             y='chuj_count',
             title="Koľko krát bol kto Chuj",
-            labels={'player': 'Hráč', 'chuj_count': 'Count'},
+            labels={'player': 'Hráč', 'chuj_count': 'Absolútny počet'},
             color='chuj_count',
             color_continuous_scale='Viridis'
         )
