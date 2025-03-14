@@ -53,7 +53,7 @@ initialize_database()
 
 # Get current application state
 def get_app_state():
-    result = conn.query('SELECT value FROM params WHERE name = "state";', ttl=0)
+    result = conn.query("SELECT value FROM params WHERE name = 'state';", ttl=0)
     return result["value"][0] if not result.empty else "no_current_game"
 
 # Available players
@@ -107,15 +107,15 @@ def display_new_game_screen():
 def start_new_game(players):
     with conn.session as s:
         # Update app state
-        s.execute(text('UPDATE params SET value = "game_created" WHERE name = "state";'))
+        s.execute(text("UPDATE params SET value = 'game_created' WHERE name = 'state';"))
         
         # Create and initialize current game table
-        s.execute(text('CREATE TABLE IF NOT EXISTS current_game (player TEXT, score INTEGER, round INTEGER);'))
-        s.execute(text('DELETE FROM current_game;'))
+        s.execute(text("CREATE TABLE IF NOT EXISTS current_game (player TEXT, score INTEGER, round INTEGER);"))
+        s.execute(text("DELETE FROM current_game;"))
         
         for player in players:
             s.execute(
-                text('INSERT INTO current_game (player, score, round) VALUES (:player, :score, :round);'), 
+                text("INSERT INTO current_game (player, score, round) VALUES (:player, :score, :round);"), 
                 params=dict(player=player, score=0, round=0)
             )
         
@@ -123,9 +123,9 @@ def start_new_game(players):
 
 def display_current_game():
     # Get current game data
-    current_round = int(conn.query('SELECT MAX(round) AS round FROM current_game;', ttl=0)['round'][0])
-    players = conn.query('SELECT player FROM current_game WHERE round = 0;', ttl=0)['player']
-    current_data = conn.query('SELECT * FROM current_game;', ttl=0)
+    current_round = int(conn.query("SELECT MAX(round) AS round FROM current_game;", ttl=0)['round'][0])
+    players = conn.query("SELECT player FROM current_game WHERE round = 0;", ttl=0)['player']
+    current_data = conn.query("SELECT * FROM current_game;", ttl=0)
     
     # Display game title and dealer information
     st.title("Aktuálna hra")
@@ -210,7 +210,7 @@ def submit_round(players, round_scores, new_round):
         # Insert round scores
         for player in players:
             s.execute(
-                text('INSERT INTO current_game (player, score, round) VALUES (:player, :score, :round)'), 
+                text("INSERT INTO current_game (player, score, round) VALUES (:player, :score, :round)"), 
                 params=dict(player=player, score=round_scores[player], round=new_round)
             )
         s.commit()
@@ -223,7 +223,7 @@ def submit_round(players, round_scores, new_round):
 
 def check_game_end():
     # Query to get summed scores per player
-    final_scores = conn.query('SELECT player, SUM(score) as score FROM current_game GROUP BY player;', ttl=0)
+    final_scores = conn.query("SELECT player, SUM(score) as score FROM current_game GROUP BY player;", ttl=0)
 
     winner = None
     winning_score = 0
@@ -248,8 +248,8 @@ def check_game_end():
 
 def end_current_game_without_saving():
     with conn.session as s:
-        s.execute(text('UPDATE params SET value = "no_current_game" WHERE name = "state";'))
-        s.execute(text('DROP TABLE IF EXISTS current_game;'))
+        s.execute(text("UPDATE params SET value = 'no_current_game' WHERE name = 'state';"))
+        s.execute(text("DROP TABLE IF EXISTS current_game;"))
         s.commit()
 
 def end_current_game():
@@ -258,13 +258,13 @@ def end_current_game():
     
     # Then update the state and drop the table
     with conn.session as s:
-        s.execute(text('UPDATE params SET value = "no_current_game" WHERE name = "state";'))
-        s.execute(text('DROP TABLE IF EXISTS current_game;'))
+        s.execute(text("UPDATE params SET value = 'no_current_game' WHERE name = 'state';"))
+        s.execute(text("DROP TABLE IF EXISTS current_game;"))
         s.commit()
 
 def save_game_to_history():
     # Get current game data
-    game_data = conn.query('SELECT * FROM current_game;', ttl=0)
+    game_data = conn.query("SELECT * FROM current_game;", ttl=0)
     
     # Get new game ID
     game_id_result = conn.query('''
