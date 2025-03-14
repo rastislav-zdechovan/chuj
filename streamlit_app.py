@@ -8,7 +8,7 @@ from datetime import datetime
 st.set_page_config(page_title="Chuj", layout="wide")
 
 # Database connection
-conn = st.connection('game_db', type='sql')
+conn = st.connection('neon_db', type='sql')
 
 # Initialize database if needed
 def initialize_database():
