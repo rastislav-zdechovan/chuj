@@ -8,7 +8,7 @@ from datetime import datetime
 st.set_page_config(page_title="Chuj", layout="wide")
 
 # Database connection
-conn = st.connection('neon_db', type='sql')
+conn = st.connection('game_db', type='sql')
 
 # Initialize database if needed
 def initialize_database():
@@ -200,7 +200,7 @@ def display_current_game():
             
     
     # Reset game button
-    if st.button("Koniec hry", help="Toto ukončí aktuálnu hru bez jej uloženia!"):
+    if st.button("Koniec hry"):
         end_current_game_without_saving()
         st.rerun()
 
