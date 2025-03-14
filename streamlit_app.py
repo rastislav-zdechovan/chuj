@@ -57,7 +57,7 @@ def get_app_state():
     return result["value"][0] if not result.empty else "no_current_game"
 
 # Available players
-PLAYER_OPTIONS = ['Mata', 'Fabi', 'Rasto', 'Mato', 'Janka']
+PLAYER_OPTIONS = ['Fabi', 'Ami', 'Anička', 'Rasťo', 'Maťa', 'Maťo', 'Valika', 'Janka', 'Maco', 'Danka', 'Ondra', 'Vlado', 'Adela', 'Roman', 'Dedko']
 WINNING_SCORE = 100
 
 # Main application logic
