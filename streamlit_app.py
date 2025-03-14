@@ -207,8 +207,14 @@ def display_current_game():
 def submit_round(players, round_scores, new_round):
     
     with conn.session as s:
+        current_scores = conn.query("SELECT player, SUM(score) as score FROM current_game GROUP BY player;", ttl=0)
+
         # Insert round scores
         for player in players:
+            future_score_series = current_scores.loc[current_scores['player'] == player, 'score'] 
+            future_score = int(future_score_series.item()) + round_scores[player]
+            if future_score == 100:
+                round_scores[player] = round_scores[player] - 10
             s.execute(
                 text("INSERT INTO current_game (player, score, round) VALUES (:player, :score, :round)"), 
                 params=dict(player=player, score=round_scores[player], round=new_round)
